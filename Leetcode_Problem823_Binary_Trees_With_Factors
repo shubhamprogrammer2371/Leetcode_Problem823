@@ -1,0 +1,27 @@
+int cmp(const void *a, const void *b)
+{
+    return *(int *)a - *(int *)b;
+}
+
+int numFactoredBinaryTrees(int* arr, int arrSize){
+    int result = 0, mod = pow(10, 9) + 7;
+    qsort(arr, arrSize, sizeof(int), cmp);
+    long dp[arrSize];
+    for(int i = 0; i < arrSize; i++) 
+        dp[i] = 1;
+    for(int i = 0; i < arrSize; i++) 
+    {
+		int left = 0, right = i - 1;
+		while (left <= right) 
+        {
+			if((long)arr[left] * arr[right] > arr[i])
+				right--;
+			else if ((long)arr[left] * arr[right] < arr[i])
+				left++;
+			else
+                dp[i] += (left == right) ? (dp[left++] * dp[right--]) : (2 * (dp[left++] * dp[right--]));
+		}
+		result = ((result % mod) + dp[i]) % mod;   
+	}
+    return result;
+}
